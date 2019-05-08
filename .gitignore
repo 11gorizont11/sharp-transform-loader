@@ -10,6 +10,7 @@ yarn-debug.log*
 /dist
 /local
 /reports
+/example/*/dist
 .DS_Store
 Thumbs.db
 .idea
