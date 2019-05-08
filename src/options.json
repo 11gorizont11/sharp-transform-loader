@@ -17,7 +17,7 @@
     "placeholder": {
       "type": "boolean"
     },
-    "lightweight": {
+    "webp": {
       "type": "boolean"
     }
   },
