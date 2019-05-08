@@ -1,0 +1,8 @@
+{
+  "main": "./example.js",
+  "name": "sharp-transform-loader-example",
+  "private": true,
+  "scripts": {
+    "build": "../../node_modules/.bin/webpack ."
+  }
+}

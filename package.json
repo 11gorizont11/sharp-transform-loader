@@ -1,0 +1,72 @@
+{
+  "name": "sharp-transform-loader",
+  "version": "1.0.0",
+  "description": "A sharp transform loader module for webpack",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm run build -- -w",
+    "build": "cross-env NODE_ENV=production babel src -d dist --ignore 'src/**/*.test.js' --copy-files",
+    "clean": "del-cli dist",
+    "example": "webpack --mode=production --config example/pure/webpack.config.js"
+  },
+  "engines": {
+    "node": ">= 6.9.0"
+  },
+  "author": "Alex Olexyuk",
+  "license": "MIT",
+  "peerDependencies": {
+    "webpack": "^4.0.0",
+    "file-loader": "^3.0.0"
+  },
+  "dependencies": {
+    "loader-utils": "^1.2.2",
+    "schema-utils": "^1.0.0",
+    "sharp": "^0.20.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.2.0",
+    "@babel/core": "^7.2.2",
+    "@babel/polyfill": "^7.0.0",
+    "@babel/preset-env": "^7.2.0",
+    "@webpack-contrib/defaults": "^3.0.0",
+    "@webpack-contrib/eslint-config-webpack": "^3.0.0",
+    "cross-env": "^5.0.0",
+    "del": "^3.0.0",
+    "del-cli": "^1.0.0",
+    "eslint": "^5.10.0",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-config-prettier": "^2.9.0",
+    "eslint-plugin-import": "^2.8.0",
+    "file-loader": "^3.0.1",
+    "jest": "^23.6.0",
+    "lint-staged": "^8.1.0",
+    "prettier": "^1.8.2",
+    "standard-version": "^4.0.0",
+    "webpack": "^4.5.0",
+    "webpack-cli": "^3.3.2"
+  },
+  "keywords": [
+    "webpack"
+  ],
+  "babel": {
+    "presets": [
+      [
+        "@babel/preset-env",
+        {
+          "targets": {
+            "node": "6.9.0"
+          },
+          "useBuiltIns": "usage"
+        }
+      ]
+    ],
+    "sourceMaps": true,
+    "retainLines": true
+  },
+  "eslintConfig": {
+    "extends": [
+      "airbnb-base",
+      "prettier"
+    ]
+  }
+}

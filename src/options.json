@@ -1,0 +1,25 @@
+{
+  "type": "object",
+  "properties": {
+    "format": {
+      "type": "string"
+    },
+    "sizes": {
+      "anyOf": [
+        {
+          "type": "array"
+        },
+        {
+          "type": "string"
+        }
+      ]
+    },
+    "placeholder": {
+      "type": "boolean"
+    },
+    "lightweight": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": true
+}
