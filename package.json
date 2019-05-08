@@ -55,8 +55,7 @@
         {
           "targets": {
             "node": "6.9.0"
-          },
-          "useBuiltIns": "usage"
+          }
         }
       ]
     ],

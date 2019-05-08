@@ -10,7 +10,6 @@ module.exports = function resizeLoader(content) {
   const callback = this.async();
 
   const { size } = loaderUtils.parseQuery(this.query) || { size: '' };
-  console.log("TCL: resizeLoader -> size", size)
 
   resizeImage(content, size).then((buffer) => {
     callback(null, buffer);

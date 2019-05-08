@@ -1,4 +1,4 @@
-import whale from './whale.jpeg?sizes=400w+800w+1x+2x&placeholder&webp';
+import whale from './whale.jpeg?sizes=400w+400w.webp+800w+800w.webp+1x+2x&placeholder&webp';
 // alternative syntax
 import paris from './paris.jpeg?sizes[]=400w&sizes[]=800w&placeholder';
 
@@ -27,6 +27,5 @@ function addImage(src, srcSet) {
 }
 
 // addImage(whale.placeholder.url);
-addImage(whale.placeholder.url);
-Object.keys(whale.sources).forEach((srcKey) => addImage(whale.sources[srcKey], whale.srcSet));
-addImage(whale.webp);
+Object.keys(whale.sources).forEach((srcKey) => addImage(whale.sources[srcKey]));
+// addImage(whale.webp);

@@ -5,11 +5,13 @@ import validateOptions from 'schema-utils';
 import schema from './options.json';
 
 const ALLOWED_SIZES_TYPES = ['String', 'Undefined', 'Array'];
+const WEBP_REGEXP = new RegExp(/(.webp)$/g);
 
 // helper functions
 const getType = (item) => Object.prototype.toString.call(item).slice(8, -1);
 const isOneOfType = (item) => (types) => types.includes(getType(item));
 const isString = (item) => isOneOfType(item)(['String']);
+const isNull = (item) => isOneOfType(item)(['Null']);
 const getUniqArray = (items) => Array.from(new Set(items));
 const pipe = (...funcs) => (...args) => funcs.reduce((a, b) => a(b(...args)));
 const findInObjects = (prop, ...objects) => {
@@ -43,14 +45,6 @@ function buildResizeLoader(size) {
   });
 }
 
-function createToWebpLoader(resource) {
-  const loaderOptions = url.format({
-    pathname: path.join(__dirname, './to-webp-loader'),
-  });
-
-  return `require('!!file-loader?name=[hash].webp!${url.format(loaderOptions)}!${resource}')`;
-}
-
 function createResizeRequest(size, existingLoaders, resource) {
   const loaders = [...existingLoaders, buildResizeLoader(size)]
   const remainingRequest = rebuildRemainingRequest(loaders, resource);
@@ -65,6 +59,23 @@ function createPlaceholderRequest(resource) {
   return `require('!!${url.format(loaderOptions)}!${resource}')`;
 }
 
+function buildToWebpLoader(size, resource) {
+  const loaderOptions = url.format({
+    pathname: path.join(__dirname, './to-webp-loader'),
+  });
+
+  const loaders = ['file-loader?name=[hash].webp', `${url.format(loaderOptions)}`];
+  if (!isNull(size)) {
+    loaders.push(buildResizeLoader(size.replace(WEBP_REGEXP, '')))
+  }
+  const remainingRequest = rebuildRemainingRequest(loaders, resource);
+  return `require(${JSON.stringify(remainingRequest)})`;
+}
+
+function createChainLoaders(size, loaders, resource) {
+  return WEBP_REGEXP.test(size) ? buildToWebpLoader(size, resource) : createResizeRequest(size, loaders, resource);
+}
+
 function buildSources(sizes, loaders, resource) {
   const sources = {};
 
@@ -72,12 +83,28 @@ function buildSources(sizes, loaders, resource) {
     if (size !== null && !/\d+\w/.test(size)) {
       throw new TypeError(`sharp-transform-loader: Received size "${size}" does not match the format "\\d+w"`);
     }
-
     const actualSize = size;
-    sources[actualSize] = createResizeRequest(actualSize, loaders, resource(size));
+    sources[actualSize] = createChainLoaders(actualSize, loaders, resource)
   });
 
   return sources;
+}
+
+
+function splitSourcesByExt(sources) {
+  const sourcesWebp = {};
+  const sourcesRegular = {};
+
+  Object.keys(sources).forEach(sourceKey => {
+    if (WEBP_REGEXP.test(sourceKey)) {
+      const sizeKey = sourceKey.replace(WEBP_REGEXP, '');
+      sourcesWebp[sizeKey] = sources[sourceKey];
+    } else {
+      sourcesRegular[sourceKey] = sources[sourceKey];
+    }
+  })
+
+  return [sourcesWebp, sourcesRegular];
 }
 
 function stringifySources(sources) {
@@ -91,13 +118,7 @@ function stringifySources(sources) {
 }
 
 function stringifySrcSet(sources) {
-  return Object.keys(sources).map((size) => {
-    if (size === 'default') {
-      return `${sources[size]} `;
-    }
-
-    return `${sources[size]} + " ${size}"`;
-  }).join('+","+');
+  return Object.keys(sources).map((size) => `${sources[size]} + " ${size}"`).join('+","+');
 }
 
 function getSizes(rawSizes) {
@@ -129,15 +150,12 @@ sharpTransformLoader.pitch = function sharpTransformLoaderPitch(remainingRequest
   }
 
   const [loaders, resource] = splitRemainingRequest(remainingRequest);
+  const sources = buildSources(sizes, loaders, resource);
+  const [sourcesWebp, sourcesRegular] = splitSourcesByExt(sources);
+  const srcSet = Object.keys(sourcesRegular).length ? `srcSet: ${stringifySrcSet(sourcesRegular)}, ` : '';
+  const srcSetWebp = Object.keys(sourcesWebp).length ? `srcSetWebp: ${stringifySrcSet(sourcesWebp)}, ` : '';
 
-  const transformResource = ((inputSource, size) => `${inputSource}?size = ${size} `);
-
-  const sources = buildSources(sizes, loaders, ((size) => transformResource(resource, size)));
-
-  const srcSet = Object.keys(sources).length ? `srcSet: ${stringifySrcSet(sources)}, ` : '';
-
-
-  const webpFormat = webp ? `webp: ${createToWebpLoader(resource)}, ` : '';
+  const webpFormat = webp ? `webp: ${buildToWebpLoader(null, resource)}, ` : '';
 
   const placeholderScript = placeholder
     ? `placeholder: ${createPlaceholderRequest(resource)}, `
@@ -146,6 +164,7 @@ sharpTransformLoader.pitch = function sharpTransformLoaderPitch(remainingRequest
   return `module.exports = {
     sources: ${stringifySources(sources)},
     ${srcSet}
+    ${srcSetWebp}
     ${placeholderScript}
     ${webpFormat}
 };
