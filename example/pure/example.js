@@ -1,6 +1,9 @@
 import whale from './whale.jpeg?sizes=400w+400w.webp+800w+800w.webp+1x+2x&placeholder&webp';
 // alternative syntax
 import paris from './paris.jpeg?sizes[]=400w&sizes[]=800w&placeholder';
+import DOG from '../../test/assets/dog.jpg?webp&placeholder';
+
+console.log("TCL: DOG", DOG)
 
 console.log('IMAGE', whale);
 

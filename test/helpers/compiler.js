@@ -1,27 +1,35 @@
 import path from 'path';
 import fs from 'fs';
 import webpack from 'webpack';
+import jsdom from 'jsdom';
 import MemoryFs from 'memory-fs';
 
-export default (fixture, options = {}) => {
-  const compiler = webpack({
-    context: __dirname,
-    entry: `./${fixture}`,
-    output: {
-      path: path.resolve(__dirname),
-      filename: 'bundle.js',
+export const ROOT_DIR = path.resolve(__dirname, '..');
+const BUNDLE = 'bundle.js';
+
+const BASE_CONFIG = {
+  entry: path.join(ROOT_DIR, 'main.js'),
+  output: {
+    filename: BUNDLE,
+    path: ROOT_DIR,
+  },
+  resolveLoader: {
+    alias: {
+      'sharp-transform-loader': path.resolve(__dirname, '../../dist/index'),
     },
+  },
+};
+
+Object.freeze(BASE_CONFIG);
+
+export function makeCompiler({ rule, files }) {
+  const webpackConfig = Object.assign({}, BASE_CONFIG, {
     module: {
-      rules: [{
-        test: /\.(jpe?g|png|gif|svg)$/,
-        use: [{
-          loader: path.resolve(__dirname, '../src/index'),
-        }, {
-          loader: 'file-loader'
-        }]
-      }]
-    }
+      rules: [rule],
+    },
   });
+
+  const compiler = webpack(webpackConfig);
 
   const memoryFs = new MemoryFs();
 
@@ -30,7 +38,6 @@ export default (fixture, options = {}) => {
   compiler.outputFileSystem = memoryFs;
   compiler.resolvers.normal.fileSystem = memoryFs;
   compiler.resolvers.context.fileSystem = memoryFs;
-
 
   ['readFileSync', 'statSync'].forEach((fn) => {
     // Preserve the reference to original function
@@ -48,12 +55,58 @@ export default (fixture, options = {}) => {
     };
   });
 
+  for (const fileName of Object.keys(files)) {
+    const filePath = path.join(ROOT_DIR, fileName);
+
+    memoryFs.mkdirpSync(path.dirname(filePath));
+    memoryFs.writeFileSync(filePath, files[fileName]);
+  }
+
+  return compiler;
+}
+
+const JSDOM_HTML = `
+<!DOCTYPE html>
+<html>
+  <head></head>
+  <body></body>
+</html>
+`;
+
+export function runTest(compiler, assert) {
   return new Promise((resolve, reject) => {
     compiler.run((err, stats) => {
-      if (err) reject(err);
-      if (stats.hasErrors()) reject(new Error(stats.toJson().errors));
+      if (err || stats.compilation.errors.length) {
+        reject(err || new Error(stats.compilation.errors));
+        return;
+      }
 
-      resolve(stats);
+      const bundleJs = stats.compilation.assets[BUNDLE].source();
+
+      jsdom.env({
+        html: JSDOM_HTML,
+        src: [bundleJs],
+        virtualConsole: jsdom.createVirtualConsole().sendTo(console),
+        done(err2, window) {
+          if (err2) {
+            reject(err2);
+            return;
+          }
+
+          const result = assert(window);
+
+          function cleanUp() {
+            window.close();
+            resolve();
+          }
+
+          if (result && result.then) {
+            result.then(cleanUp);
+          } else {
+            cleanUp();
+          }
+        },
+      });
     });
   });
-};
+}
