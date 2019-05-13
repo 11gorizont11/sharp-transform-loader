@@ -9,7 +9,7 @@ module.exports = function resizeLoader(content) {
 
   const callback = this.async();
 
-  const { size } = loaderUtils.parseQuery(this.query) || { size: '' };
+  const { size } = loaderUtils.parseQuery(this.query);
 
   resizeImage(content, size).then((buffer) => {
     callback(null, buffer);

@@ -136,7 +136,7 @@ export default function sharpTransformLoader(content) {
 
 sharpTransformLoader.pitch = function sharpTransformLoaderPitch(remainingRequest) {
   const loaderQuery = getOptions(this) || {};
-  const resourceQuery = parseQuery(this.resourceQuery) || {};
+  const resourceQuery = this.resourceQuery ? parseQuery(this.resourceQuery) : {};
 
   validateOptions(schema, loaderQuery, 'sharp-transform-loader');
 
