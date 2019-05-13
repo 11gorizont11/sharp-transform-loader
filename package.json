@@ -8,7 +8,8 @@
     "build": "cross-env NODE_ENV=production babel src -d dist --ignore 'src/**/*.test.js' --copy-files",
     "clean": "del-cli dist",
     "example": "webpack --mode=production --config example/pure/webpack.config.js",
-    "test": "jest"
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "engines": {
     "node": ">= 6.9.0"
@@ -26,11 +27,12 @@
   },
   "devDependencies": {
     "@babel/cli": "^7.2.0",
-    "@babel/core": "^7.2.2",
     "@babel/polyfill": "^7.0.0",
     "@babel/preset-env": "^7.2.0",
     "@webpack-contrib/defaults": "^3.0.0",
     "@webpack-contrib/eslint-config-webpack": "^3.0.0",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-jest": "^23.6.0",
     "babel-loader": "^8.0.0-beta.6",
     "cross-env": "^5.0.0",
     "del": "^3.0.0",
@@ -40,8 +42,8 @@
     "eslint-config-prettier": "^2.9.0",
     "eslint-plugin-import": "^2.8.0",
     "file-loader": "^3.0.1",
-    "jest": "^23.6.0",
-    "jsdom": "^15.0.0",
+    "jest": "^24.8.0",
+    "jsdom": "^9.12.0",
     "lint-staged": "^8.1.0",
     "memory-fs": "^0.4.1",
     "prettier": "^1.8.2",
@@ -60,7 +62,10 @@
       [
         "@babel/preset-env",
         {
-          "useBuiltIns": "entry"
+          "targets": {
+            "node": "6.9.0"
+          },
+          "useBuiltIns": "usage"
         }
       ]
     ]

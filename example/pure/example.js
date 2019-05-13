@@ -1,7 +1,7 @@
 import whale from './whale.jpeg?sizes=400w+400w.webp+800w+800w.webp+1x+2x&placeholder&webp';
 // alternative syntax
 import paris from './paris.jpeg?sizes[]=400w&sizes[]=800w&placeholder';
-import DOG from '../../test/assets/dog.jpg?webp&placeholder';
+import DOG from '../../test/assets/dog.jpg?sizes=1x+1x.webp+2x+2x.webp';
 
 console.log("TCL: DOG", DOG)
 
@@ -22,7 +22,6 @@ console.log('TCL: paris', paris);
 function addImage(src, srcSet) {
   const image = new Image();
   image.src = src;
-  image.style.cssText = 'background:red;';
   image.style = 'width: 100%';
 
   if (srcSet) { image.srcset = srcSet; }

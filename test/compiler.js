@@ -15,7 +15,7 @@ const BASE_CONFIG = {
   },
   resolveLoader: {
     alias: {
-      'sharp-transform-loader': path.resolve(__dirname, '../../dist/index'),
+      'sharp-transform-loader': path.resolve(__dirname, '../src/index'),
     },
   },
 };
