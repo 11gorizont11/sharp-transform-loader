@@ -2,8 +2,9 @@
   "name": "sharp-transform-loader",
   "version": "1.0.0",
   "description": "A sharp transform loader module for webpack",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
+    "prepublish": "npm run build",
     "start": "npm run build -- -w",
     "build": "cross-env NODE_ENV=production babel src -d dist --ignore 'src/**/*.test.js' --copy-files",
     "clean": "del-cli dist",
@@ -14,8 +15,15 @@
   "engines": {
     "node": ">= 6.9.0"
   },
-  "author": "Alex Olexyuk",
+  "author": "Alex Olexyuk <olexuk.alex@gmail.com>",
   "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/11gorizont11/sharp-transform-loader"
+  },
   "peerDependencies": {
     "webpack": "^4.0.0",
     "file-loader": "^3.0.0"
