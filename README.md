@@ -4,18 +4,18 @@
   </a>
 </div>
 
-# Sharp-image-loader
+# Sharp-transform-loader
 ### Used [sharp](https://github.com/lovell/sharp) under the hood
-A `webpack` loader for generating new size images from source image, also loader support webp format.
+A `webpack` loader for generating images different sizes from the source image. Optionally loader supports webp format and generates placeholder for this image.
 
-Motivation: automatically resize source image and return requested dimensions in two format initial and webp sa srcSet string. Generate blurred placeholder for image.
+Motivation: automatically resize source image and return requested dimensions in two format initial and webp as srcset string. Optionally generate blurred placeholder for the image.
 
 ## Getting started
 
 To begin, you'll need to install `sharp-transform-loader`:
 
 ```bash
-  npm i -D sharp-image-loader
+  npm i -D sharp-transform-loader
 ```
 
 ## Usage
@@ -33,7 +33,7 @@ const webpackConfig = {
       test: /\.(jpe?g|png|svg|gif)$/,
       use: [
         {
-          loader: 'sharp-image-loader',
+          loader: 'sharp-transform-loader',
           options: {
             sizes: ['400w', '2x'],
             placeholder: true
