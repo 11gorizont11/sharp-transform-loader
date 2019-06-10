@@ -9,7 +9,7 @@ export async function resizeImage(content, toWidth, toHeight) {
 }
 
 export function toWebp(content) {
-  return sharp(content).webp().toBuffer();
+  return sharp(content).webp({ nearLossless: true }).toBuffer();
 }
 
 export async function toPlaceholder(content) {
