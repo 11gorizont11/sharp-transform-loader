@@ -40,7 +40,7 @@ function rebuildRemainingRequest(loaders, resource) {
 
 function buildResizeLoader(size) {
   return url.format({
-    pathname: path.join(__dirname, './resize-loader'),
+    pathname: path.resolve(__dirname, './resize-loader'),
     query: { size },
   });
 }
@@ -52,19 +52,22 @@ function createResizeRequest(size, existingLoaders, resource) {
 }
 
 function createPlaceholderRequest(resource) {
-  const loaderOptions = {
-    pathname: path.join(__dirname, './placeholder-loader'),
-  };
+  const loaderOptions = url.format({
+    pathname: path.resolve(__dirname, './placeholder-loader'),
+  });
 
-  return `require('!!${url.format(loaderOptions)}!${resource}')`;
+  const remainingRequest = rebuildRemainingRequest([`${loaderOptions}`], resource);
+
+  return `require(${JSON.stringify(remainingRequest)})`;
 }
 
 function buildToWebpLoader(size, resource) {
   const loaderOptions = url.format({
-    pathname: path.join(__dirname, './to-webp-loader'),
+    pathname: path.resolve(__dirname, './to-webp-loader'),
   });
 
-  const loaders = ['file-loader?name=[hash].webp', `${url.format(loaderOptions)}`];
+
+  const loaders = ['file-loader?name=[hash].webp', `${loaderOptions}`];
   if (!isNull(size)) {
     loaders.push(buildResizeLoader(size.replace(WEBP_REGEXP, '')))
   }

@@ -1,9 +1,6 @@
 {
   "type": "object",
   "properties": {
-    "format": {
-      "type": "string"
-    },
     "sizes": {
       "anyOf": [
         {
