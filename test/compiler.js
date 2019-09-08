@@ -11,13 +11,13 @@ const BASE_CONFIG = {
   entry: path.join(ROOT_DIR, 'main.js'),
   output: {
     filename: BUNDLE,
-    path: ROOT_DIR,
+    path: ROOT_DIR
   },
   resolveLoader: {
     alias: {
-      'sharp-transform-loader': path.resolve(__dirname, '../src/index'),
-    },
-  },
+      'sharp-transform-loader': path.resolve(__dirname, '../src/index')
+    }
+  }
 };
 
 Object.freeze(BASE_CONFIG);
@@ -25,8 +25,8 @@ Object.freeze(BASE_CONFIG);
 export function makeCompiler({ rule, files }) {
   const webpackConfig = Object.assign({}, BASE_CONFIG, {
     module: {
-      rules: [rule],
-    },
+      rules: [rule]
+    }
   });
 
   const compiler = webpack(webpackConfig);
@@ -39,7 +39,7 @@ export function makeCompiler({ rule, files }) {
   compiler.resolvers.normal.fileSystem = memoryFs;
   compiler.resolvers.context.fileSystem = memoryFs;
 
-  ['readFileSync', 'statSync'].forEach((fn) => {
+  ['readFileSync', 'statSync'].forEach(fn => {
     // Preserve the reference to original function
     const memoryMethod = memoryFs[fn];
 
@@ -105,8 +105,8 @@ export function runTest(compiler, assert) {
           } else {
             cleanUp();
           }
-        },
+        }
       });
     });
-  });
+  }).catch(err => console.error(err));
 }
