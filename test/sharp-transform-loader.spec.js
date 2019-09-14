@@ -5,6 +5,8 @@ const WEBP_FORMAT = new RegExp(/(.webp)$/g);
 const DOG = './test/assets/dog.jpg';
 const ICELAND = './test/assets/iceland.jpg';
 const FLOWER = './test/assets/flower.jpg';
+const OWL = './test/assets/owl.png';
+const WEBPACKLOGO = './test/assets/webpack-icon.svg';
 
 describe('sharp-transform-loader spec', () => {
   const RULE = {
@@ -108,7 +110,6 @@ describe('sharp-transform-loader spec', () => {
     });
 
     return runTest(compiler, window => {
-      console.log('TCL: window.img.sources', window.img.sources);
       expect(Object.keys(window.img.sources)).toEqual([
         '1x',
         '1x.webp',
@@ -133,6 +134,52 @@ describe('sharp-transform-loader spec', () => {
       expect(window.img.srcSet).toContain('400w');
       expect(window.img.srcSet).toContain('800w');
       expect(window.img.srcSet).toContain('2x');
+    });
+  });
+
+  test('png format', () => {
+    const compiler = makeCompiler({
+      files: {
+        'main.js': `window.img = require('${OWL}?sizes[]=400w&sizes[]=800w&sizes[]=800w.webp&placeholder');`
+      },
+      rule: RULE
+    });
+
+    return runTest(compiler, window => {
+      expect(Object.keys(window.img)).toEqual([
+        'sources',
+        'image',
+        'srcSet',
+        'srcSetWebp',
+        'placeholder'
+      ]);
+      expect(Object.keys(window.img.sources)).toEqual([
+        '400w',
+        '800w',
+        '800w.webp'
+      ]);
+      expect(window.img.srcSet).toContain('400w');
+      expect(window.img.srcSet).toContain('800w');
+    });
+  });
+
+  test('svg format', () => {
+    const compiler = makeCompiler({
+      files: {
+        'main.js': `window.img = require('${WEBPACKLOGO}?sizes=400w+400w.webp+800w+800w.webp&placeholder');`
+      },
+      rule: RULE
+    });
+
+    return runTest(compiler, window => {
+      // console.log('TCL: window.img.sources', window.img);
+      expect(Object.keys(window.img)).toEqual([
+        'sources',
+        'image',
+        'srcSet',
+        'srcSetWebp',
+        'placeholder'
+      ]);
     });
   });
 });

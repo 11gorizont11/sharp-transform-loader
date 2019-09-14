@@ -5,7 +5,9 @@
 </div>
 
 # Sharp-transform-loader
+
 ### Used [sharp](https://github.com/lovell/sharp) under the hood
+
 A `webpack` loader for generating images different sizes from the source image. Optionally loader supports webp format and generates placeholder for this image.
 
 Motivation: automatically resize source image and return requested dimensions in two format initial and webp as srcset string. Optionally generate blurred placeholder for the image.
@@ -19,44 +21,51 @@ To begin, you'll need to install `sharp-transform-loader`:
 ```
 
 ## Usage
-Basically is two configuration for the loader: 
+
+Basically is two configuration for the loader:
+
 - loader itself
 - image that you want to be processed by loader
 
 for all images general loader config:
+
 ```javascript
 const webpackConfig = {
   // Only showing relevant parts.
   module: {
-    rules: [{
-      // match image files
-      test: /\.(jpe?g|png|svg|gif)$/,
-      use: [
-        {
-          loader: 'sharp-transform-loader',
-          options: {
-            sizes: ['400w', '2x'],
-            placeholder: true
+    rules: [
+      {
+        // match image files
+        test: /\.(jpe?g|png|svg|gif)$/,
+        use: [
+          {
+            loader: 'sharp-transform-loader',
+            options: {
+              sizes: ['400w', '2x'],
+              placeholder: true
+            }
+          },
+          {
+            loader: 'file-loader'
           }
-        },
-        {
-          loader: 'file-loader'
-        }
-        // chain of other loader
-      ],
-    }],
-  },
+          // chain of other loader
+        ]
+      }
+    ]
+  }
 
   // ...
 };
 ```
+
 direct for the image that should be processed:
 
 ```javascript
 import image './image.jpeg?sizes=400w+400w.webp+800w+800w.webp&placeholder'
 ```
 
-or in more canonical way: 
+or in more canonical way:
+
 ```javascript
 import image './image.jpeg?sizes[]=400w&sizes[]=800w&placeholder'
 ```
@@ -65,7 +74,12 @@ This allows us to separate the configuration of the loader, and the specificatio
 
 ## `sharp-transform-loader` options
 
-### `sizes` 
+### `image`
+
+`image` default field consist image in provided format.
+
+### `sizes`
+
 `sizes` this is the main feature of the `sharp-transform-loader`, use this option to specify the different image sizes you wish to import.
 You can either specify the different sizes as a standard array (`?sizes[]=100w&sizes[]=200w`) or using the less verbose, syntax (`?sizes=100w+200w`)
 
@@ -79,14 +93,13 @@ sizes values must follow format `<number>w`, `<multiplier>x`, also size can be p
 
 `webp` will transform source to webp format and return path to `xxxx.webp` image.
 
-
 ## Results of transforming image
 
 `sources : object` - all requested sizes for the image
 
 ```javascript
-  import image from './image.jpeg?sizes=200w+200w.webp+800w+800w.webp';
-  /*
+import image from './image.jpeg?sizes=200w+200w.webp+800w+800w.webp';
+/*
   image.sources => {
     '200w': 'xxxx.jpeg',
     '200w.webp': 'xxxx.webp',
@@ -96,9 +109,10 @@ sizes values must follow format `<number>w`, `<multiplier>x`, also size can be p
   */
 ```
 
-`placeholder : object` - object with keys: 
-  - `url`: base64 string blurred small image.
-  - `aspectRatio`: number the width to height ratio of the image
+`placeholder : object` - object with keys:
+
+- `url`: base64 string blurred small image.
+- `aspectRatio`: number the width to height ratio of the image
 
 ```javascript
 import image from './image.jpeg?sizes=200w+800w&placeholder';
@@ -117,14 +131,14 @@ import image from './image.jpeg?sizes=200w+800w';
 // image.srcSet => 'xxxx.jpeg 200w,xxxx.jpeg 800w'
 ```
 
-```srcSetWebp``` - srcset with webp format images
+`srcSetWebp` - srcset with webp format images
 
 ```javascript
 import image from './image.jpeg?sizes=200w.webp+800w.webp';
 // image.srcSetWebp => 'xxxx.webp 200w,xxxx.webp 800w'
 ```
 
-```webp``` - path to webp format image
+`webp` - path to webp format image
 
 ```javascript
 import image from './image.jpeg?webp';
