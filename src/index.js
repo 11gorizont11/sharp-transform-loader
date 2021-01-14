@@ -78,10 +78,12 @@ function buildToWebpLoader(size, resource) {
     pathname: path.resolve(__dirname, './to-webp-loader')
   });
 
-  const loaders = ['file-loader?name=[hash].webp', `${loaderOptions}`];
+  const loaders = ['file-loader?name=[hash].webp&esModule=false', `${loaderOptions}`];
+
   if (!isNull(size)) {
     loaders.push(buildResizeLoader(size.replace(WEBP_REGEXP, '')));
   }
+
   const remainingRequest = rebuildRemainingRequest(loaders, resource);
   return `require(${JSON.stringify(remainingRequest)})`;
 }
