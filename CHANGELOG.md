@@ -1,3 +1,5 @@
+### 3.0.0
+- sharp update to 0.29.3 to use node v16
 
 ### 2.0.0
 ### BREAKING CHANGES
