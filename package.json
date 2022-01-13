@@ -6,7 +6,7 @@
   "scripts": {
     "prepublish": "npm run build",
     "start": "npm run build -- -w",
-    "build": "cross-env NODE_ENV=production babel src -d dist --ignore 'src/**/*.test.js' --copy-files",
+    "build": "cross-env NODE_ENV=production npx babel src -d dist --ignore 'src/**/*.test.js' --copy-files",
     "clean": "rm -rf dist",
     "example": "webpack --mode=production --config example/pure/webpack.config.js",
     "test": "jest",
@@ -33,12 +33,12 @@
     "sharp": "^0.29.3"
   },
   "devDependencies": {
-    "@babel/cli": "^7.2.0",
+    "@babel/cli": "^7.16.8",
+    "@babel/core": "^7.16.7",
     "@babel/polyfill": "^7.0.0",
     "@babel/preset-env": "^7.2.0",
     "@webpack-contrib/defaults": "^3.0.0",
     "@webpack-contrib/eslint-config-webpack": "^3.0.0",
-    "babel-core": "^7.0.0-bridge.0",
     "babel-jest": "^27.4.2",
     "babel-loader": "^8.0.0-beta.6",
     "cross-env": "^5.0.0",
@@ -58,18 +58,14 @@
   "keywords": [
     "webpack"
   ],
-  "resolutions": {
-    "babel-core": "7.0.0-bridge.0"
-  },
   "babel": {
     "presets": [
       [
         "@babel/preset-env",
         {
           "targets": {
-            "node": "6.9.0"
-          },
-          "useBuiltIns": "usage"
+            "node": "10.0.0"
+          }
         }
       ]
     ]
