@@ -1,0 +1,43 @@
+{
+    "root": true,
+    "plugins": [
+        "node"
+    ],
+    "extends": [
+        "eslint:recommended",
+        "plugin:node/recommended"
+    ],
+    "env": {
+        "node": true
+    },
+    "parserOptions": {
+        "ecmaVersion": "latest",
+        "sourceType": "module"
+    },
+    "rules": {
+        "no-template-curly-in-string": "error",
+        "no-caller": "error",
+        "yoda": "error",
+        "eqeqeq": "error",
+        "no-extra-bind": "error",
+        "no-process-exit": "error",
+        "no-loop-func": "error",
+        "no-console": "off",
+        "valid-jsdoc": "error",
+        "no-var": "error",
+        "prefer-const": "error",
+        "prefer-arrow-callback": "error",
+        "object-shorthand": "error",
+        "node/no-unsupported-features/es-syntax": [
+            "error",
+            {
+                "ignores": [
+                    "modules"
+                ]
+            }
+        ]
+    },
+    "ignorePatterns": [
+        "dist"
+    ]
+}
