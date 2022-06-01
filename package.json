@@ -30,7 +30,7 @@
   "dependencies": {
     "loader-utils": "^1.2.2",
     "schema-utils": "^1.0.0",
-    "sharp": "^0.29.3"
+    "sharp": "^0.30.5"
   },
   "devDependencies": {
     "@babel/cli": "^7.16.8",
