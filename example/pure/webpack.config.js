@@ -15,7 +15,15 @@ module.exports = {
   module: {
     rules: [{
       test: /\.(jpe?g|png|gif|svg)$/,
-      use: ['sharp-transform-loader', 'file-loader?hash=sha512&digest=hex&name=[hash].[ext]'],
+      use: [{
+        loader: 'sharp-transform-loader',
+      }, {
+        loader: 'file-loader',
+        options: {
+          name: '[contenthash][name].[ext]',
+          esModule: false,
+        },
+      }],
     }],
   },
 };

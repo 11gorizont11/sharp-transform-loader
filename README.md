@@ -46,7 +46,11 @@ const webpackConfig = {
             }
           },
           {
-            loader: 'file-loader'
+            loader: 'file-loader',
+            options: {
+              name: '[contenthash][name].[ext]',
+              esModule: false,
+            },
           }
           // chain of other loader
         ]
