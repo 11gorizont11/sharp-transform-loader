@@ -25,7 +25,7 @@ const isEmpty = item => {
 
 const findInObjects = (prop, ...objects) => {
   for (const obj of objects) {
-    if (obj.hasOwnProperty(prop)) return obj[prop];
+    if (prop in obj) return obj[prop];
   }
 
   return undefined;
@@ -162,8 +162,8 @@ sharpTransformLoader.pitch = function sharpTransformLoaderPitch(
 ) {
   const loaderQuery = getOptions(this) || {};
   const resourceQuery = this.resourceQuery
-    ? parseQuery(this.resourceQuery)
-    : {};
+  ? parseQuery(this.resourceQuery)
+  : {};
 
   validateOptions(schema, loaderQuery, 'sharp-transform-loader');
 
